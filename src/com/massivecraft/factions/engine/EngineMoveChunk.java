@@ -50,80 +50,81 @@ public class EngineMoveChunk extends Engine
 		Faction factionTo = BoardColl.get().getFactionAt(chunkTo);
 
 		// ... and send info onwards.
-		this.moveChunkTerritoryInfo(mplayer, player, chunkFrom, chunkTo, factionFrom, factionTo);
-		this.moveChunkAutoClaim(mplayer, chunkTo);
+		moveChunkTerritoryInfo(mplayer, player, chunkFrom, chunkTo, factionFrom, factionTo);
+		moveChunkAutoClaim(mplayer, chunkTo);
 	}
 
 	// -------------------------------------------- //
 	// MOVE CHUNK: TERRITORY INFO
 	// -------------------------------------------- //
 
-	public void moveChunkTerritoryInfo(MPlayer mplayer, Player player, PS chunkFrom, PS chunkTo, Faction factionFrom, Faction factionTo)
+	private static void moveChunkTerritoryInfo(MPlayer mplayer, Player player, PS chunkFrom, PS chunkTo, Faction factionFrom, Faction factionTo)
 	{
-		// send host faction info updates
-		if (mplayer.isMapAutoUpdating())
+		sendAutoMapUpdates(mplayer, player, chunkTo);
+		sendFactionTitles(mplayer, player, factionFrom, factionTo);
+		sendTerritoryAccessMessage(mplayer, chunkFrom, chunkTo);
+	}
+	
+	private static void sendAutoMapUpdates(MPlayer mplayer, Player player, PS chunkTo)
+	{
+		if (!mplayer.isMapAutoUpdating()) return;
+		List<Object> message = BoardColl.get().getMap(mplayer, chunkTo, player.getLocation().getYaw(), Const.MAP_WIDTH, Const.MAP_HEIGHT);
+		mplayer.message(message);
+	}
+	
+	private static void sendFactionTitles(MPlayer mplayer, Player player, Faction factionFrom, Faction factionTo)
+	{
+		if (factionFrom == factionTo) return;
+		
+		if (mplayer.isTerritoryInfoTitles())
 		{
-			List<Object> message = BoardColl.get().getMap(mplayer, chunkTo, player.getLocation().getYaw(), Const.MAP_WIDTH, Const.MAP_HEIGHT);
-			mplayer.message(message);
+			String titleMain = parseTerritoryInfo(MConf.get().territoryInfoTitlesMain, mplayer, factionTo);
+			String titleSub = parseTerritoryInfo(MConf.get().territoryInfoTitlesSub, mplayer, factionTo);
+			int ticksIn = MConf.get().territoryInfoTitlesTicksIn;
+			int ticksStay = MConf.get().territoryInfoTitlesTicksStay;
+			int ticksOut = MConf.get().territoryInfoTitleTicksOut;
+			MixinTitle.get().sendTitleMessage(player, ticksIn, ticksStay, ticksOut, titleMain, titleSub);
 		}
-		else if (factionFrom != factionTo)
+		else
 		{
-			if (mplayer.isTerritoryInfoTitles())
-			{
-				String maintitle = parseTerritoryInfo(MConf.get().territoryInfoTitlesMain, mplayer, factionTo);
-				String subtitle = parseTerritoryInfo(MConf.get().territoryInfoTitlesSub, mplayer, factionTo);
-				MixinTitle.get().sendTitleMessage(player, MConf.get().territoryInfoTitlesTicksIn, MConf.get().territoryInfoTitlesTicksStay, MConf.get().territoryInfoTitleTicksOut, maintitle, subtitle);
-			}
-			else
-			{
-				String message = parseTerritoryInfo(MConf.get().territoryInfoChat, mplayer, factionTo);
-				player.sendMessage(message);
-			}
-		}
-
-		// Show access level message if it changed.
-		TerritoryAccess accessFrom = BoardColl.get().getTerritoryAccessAt(chunkFrom);
-		Boolean hasTerritoryAccessFrom = accessFrom.hasTerritoryAccess(mplayer);
-
-		TerritoryAccess accessTo = BoardColl.get().getTerritoryAccessAt(chunkTo);
-		Boolean hasTerritoryAccessTo = accessTo.hasTerritoryAccess(mplayer);
-
-		if ( ! MUtil.equals(hasTerritoryAccessFrom, hasTerritoryAccessTo))
-		{
-			if (hasTerritoryAccessTo == null)
-			{
-				mplayer.msg("<i>You have standard access to this area.");
-			}
-			else if (hasTerritoryAccessTo)
-			{
-				mplayer.msg("<g>You have elevated access to this area.");
-			}
-			else
-			{
-				mplayer.msg("<b>You have decreased access to this area.");
-			}
+			String message = parseTerritoryInfo(MConf.get().territoryInfoChat, mplayer, factionTo);
+			player.sendMessage(message);
 		}
 	}
-
-	public String parseTerritoryInfo(String string, MPlayer mplayer, Faction faction)
+	
+	private static String parseTerritoryInfo(String string, MPlayer mplayer, Faction faction)
 	{
 		if (string == null) throw new NullPointerException("string");
 		if (faction == null) throw new NullPointerException("faction");
-
+		
 		string = Txt.parse(string);
-
 		string = string.replace("{name}", faction.getName());
 		string = string.replace("{relcolor}", faction.getColorTo(mplayer).toString());
 		string = string.replace("{desc}", faction.getDescription());
-
+		
 		return string;
+	}
+	
+	private static void sendTerritoryAccessMessage(MPlayer mplayer, PS chunkFrom, PS chunkTo)
+	{
+		// Get TerritoryAccess for from & to chunks
+		TerritoryAccess accessFrom = BoardColl.get().getTerritoryAccessAt(chunkFrom);
+		TerritoryAccess accessTo = BoardColl.get().getTerritoryAccessAt(chunkTo);
+		
+		// See if anything has changed
+		Boolean hasAccessFrom = accessFrom.hasTerritoryAccess(mplayer);
+		Boolean hasAccessTo = accessTo.hasTerritoryAccess(mplayer);
+		if (MUtil.equals(hasAccessFrom, hasAccessTo)) return;
+		
+		// Inform
+		mplayer.message(accessTo.getStatusMessage(mplayer));
 	}
 
 	// -------------------------------------------- //
 	// MOVE CHUNK: AUTO CLAIM
 	// -------------------------------------------- //
 
-	public void moveChunkAutoClaim(MPlayer mplayer, PS chunkTo)
+	private static void moveChunkAutoClaim(MPlayer mplayer, PS chunkTo)
 	{
 		// If the player is auto claiming ...
 		Faction autoClaimFaction = mplayer.getAutoClaimFaction();

@@ -4,6 +4,8 @@ import com.massivecraft.factions.entity.Faction;
 import com.massivecraft.factions.entity.FactionColl;
 import com.massivecraft.factions.entity.MPlayer;
 import com.massivecraft.massivecore.collections.MassiveSet;
+import com.massivecraft.massivecore.util.Txt;
+import org.bukkit.ChatColor;
 
 import java.util.Collection;
 import java.util.Collections;
@@ -191,6 +193,28 @@ public class TerritoryAccess
 	public boolean isDefault()
 	{
 		return this.isHostFactionAllowed() && this.getFactionIds().isEmpty() && this.getPlayerIds().isEmpty(); 
+	}
+	
+	public String getStatusMessage(MPlayer mplayer)
+	{
+		boolean hasAccess = this.isMPlayerGranted(mplayer);
+		ChatColor color = getTerritoryAccessMessageColor(hasAccess);
+		String status = getTerritoryAccessStatus(hasAccess);
+		return Txt.parse("%sYou have %s access to this area.", color.toString(), status);
+	}
+	
+	private static ChatColor getTerritoryAccessMessageColor(Boolean hasTerritoryAccessTo)
+	{
+		if (hasTerritoryAccessTo == null) return ChatColor.YELLOW;
+		if (Boolean.TRUE.equals(hasTerritoryAccessTo)) return ChatColor.GREEN;
+		return ChatColor.RED;
+	}
+	
+	private static String getTerritoryAccessStatus(Boolean hasTerritoryAccessTo)
+	{
+		if (hasTerritoryAccessTo == null) return "standard";
+		if (Boolean.TRUE.equals(hasTerritoryAccessTo)) return "elevated";
+		return "decreased";
 	}
 
 	// -------------------------------------------- //
