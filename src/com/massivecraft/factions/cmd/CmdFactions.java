@@ -1,13 +1,13 @@
 package com.massivecraft.factions.cmd;
 
+import java.util.List;
+
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.Perm;
 import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.massivecore.command.MassiveCommandDeprecated;
 import com.massivecraft.massivecore.command.MassiveCommandVersion;
 import com.massivecraft.massivecore.command.requirement.RequirementHasPerm;
-
-import java.util.List;
 
 public class CmdFactions extends FactionsCommand
 {
@@ -59,6 +59,7 @@ public class CmdFactions extends FactionsCommand
 	public CmdFactionsRelationOld cmdFactionsRelationOldNeutral = new CmdFactionsRelationOld("neutral");
 	public CmdFactionsRelationOld cmdFactionsRelationOldEnemy = new CmdFactionsRelationOld("enemy");
 	public CmdFactionsPerm cmdFactionsPerm = new CmdFactionsPerm();
+	public CmdFactionsBlacklist cmdFactionsBlacklist = new CmdFactionsBlacklist();
 	public CmdFactionsFlag cmdFactionsFlag = new CmdFactionsFlag();
 	public CmdFactionsUnstuck cmdFactionsUnstuck = new CmdFactionsUnstuck();
 	public CmdFactionsExpansions cmdFactionsExpansions = new CmdFactionsExpansions();
@@ -116,6 +117,7 @@ public class CmdFactions extends FactionsCommand
 		this.addChild(this.cmdFactionsRelationOldNeutral);
 		this.addChild(this.cmdFactionsRelationOldEnemy);
 		this.addChild(this.cmdFactionsPerm);
+		this.addChild(this.cmdFactionsBlacklist);
 		this.addChild(this.cmdFactionsFlag);
 		this.addChild(this.cmdFactionsUnstuck);
 		this.addChild(this.cmdFactionsExpansions);

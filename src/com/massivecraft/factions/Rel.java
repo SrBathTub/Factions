@@ -1,15 +1,16 @@
 package com.massivecraft.factions;
 
+import java.util.Collections;
+import java.util.Set;
+
+import org.bukkit.ChatColor;
+
 import com.massivecraft.factions.entity.MConf;
 import com.massivecraft.massivecore.Colorized;
 import com.massivecraft.massivecore.Named;
 import com.massivecraft.massivecore.collections.MassiveSet;
-import org.bukkit.ChatColor;
 
-import java.util.Collections;
-import java.util.Set;
-
-public enum Rel implements Colorized, Named
+public enum Rel implements Colorized, Named, Selector
 {
 	// -------------------------------------------- //
 	// ENUM
@@ -101,6 +102,19 @@ public enum Rel implements Colorized, Named
 	public ChatColor getColor()
 	{
 		return MConf.get().colorMember;
+	}
+	
+	@Override
+	public String getId()
+	{
+		// TODO: Implement
+		return null;
+	}
+	
+	@Override
+	public SelectorType getType()
+	{
+		return SelectorType.RELATION;
 	}
 	
 	// -------------------------------------------- //

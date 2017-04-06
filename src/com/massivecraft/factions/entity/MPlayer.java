@@ -1,11 +1,23 @@
 package com.massivecraft.factions.entity;
 
+import java.lang.ref.WeakReference;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Map.Entry;
+import java.util.Set;
+
+import org.bukkit.ChatColor;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
+
 import com.massivecraft.factions.Factions;
 import com.massivecraft.factions.FactionsIndex;
 import com.massivecraft.factions.FactionsParticipator;
 import com.massivecraft.factions.Perm;
 import com.massivecraft.factions.Rel;
 import com.massivecraft.factions.RelationParticipator;
+import com.massivecraft.factions.SelectorType;
 import com.massivecraft.factions.event.EventFactionsChunkChangeType;
 import com.massivecraft.factions.event.EventFactionsChunksChange;
 import com.massivecraft.factions.event.EventFactionsDisband;
@@ -23,16 +35,6 @@ import com.massivecraft.massivecore.util.IdUtil;
 import com.massivecraft.massivecore.util.MUtil;
 import com.massivecraft.massivecore.util.Txt;
 import com.massivecraft.massivecore.xlib.gson.annotations.SerializedName;
-import org.bukkit.ChatColor;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-
-import java.lang.ref.WeakReference;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Iterator;
-import java.util.Map.Entry;
-import java.util.Set;
 
 public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipator
 {
@@ -642,6 +644,16 @@ public class MPlayer extends SenderEntity<MPlayer> implements FactionsParticipat
 	public String getNameAndTitle(MPlayer mplayer)
 	{
 		return this.getNameAndTitle(this.getColorTo(mplayer).toString());
+	}
+	
+	// -------------------------------------------- //
+	// OVERRIDE: Selector
+	// -------------------------------------------- //
+	
+	@Override
+	public SelectorType getType()
+	{
+		return SelectorType.PLAYER;
 	}
 
 	// -------------------------------------------- //

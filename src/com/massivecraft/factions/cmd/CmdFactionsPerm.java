@@ -6,9 +6,9 @@ public class CmdFactionsPerm extends FactionsCommand
 	// FIELDS
 	// -------------------------------------------- //
 	
-	CmdFactionsPermList cmdFactionsPermList = new CmdFactionsPermList();
-	CmdFactionsPermShow cmdFactionsPermShow = new CmdFactionsPermShow();
-	CmdFactionsPermSet cmdFactionsPermSet = new CmdFactionsPermSet();
+	public CmdFactionsPermList cmdFactionsPermList = new CmdFactionsPermList();
+	public CmdFactionsPermShow cmdFactionsPermShow = new CmdFactionsPermShow();
+	public CmdFactionsPermSet cmdFactionsPermSet = new CmdFactionsPermSet();
 	
 	// -------------------------------------------- //
 	// CONSTRUCT
