@@ -49,6 +49,7 @@ import com.massivecraft.factions.entity.MConfColl;
 import com.massivecraft.factions.entity.MFlagColl;
 import com.massivecraft.factions.entity.MPermColl;
 import com.massivecraft.factions.entity.MPlayerColl;
+import com.massivecraft.factions.entity.migrator.MigratorFaction001Invitations;
 import com.massivecraft.factions.entity.migrator.MigratorMConf001EnumerationUtil;
 import com.massivecraft.factions.event.EventFactionsChunkChangeType;
 import com.massivecraft.factions.integration.V19.IntegrationV19;
@@ -118,6 +119,7 @@ public class Factions extends MassivePlugin
 		this.activate(
 			// Migrator
 			MigratorMConf001EnumerationUtil.class,
+			MigratorFaction001Invitations.class,
 			
 			// Coll
 			// MConf should always be activated first for all plugins. It's simply a standard. The config should have no dependencies.
